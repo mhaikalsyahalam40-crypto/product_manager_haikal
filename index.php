@@ -8,6 +8,7 @@ if (empty($_SESSION['csrf_token'])) {
 
 require_once __DIR__ . '/config/db.php';
 
+
 /*
 |--------------------------------------------------------------------------
 | Search / Filter Produk
@@ -45,6 +46,7 @@ if ($search !== '') {
 }
 
 $products = $stmt->fetchAll();
+
 
 /*
 |--------------------------------------------------------------------------
@@ -85,7 +87,10 @@ if (isset($_GET['success'])) {
 
     <title>Product Manager Haikal</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css?v=2"
+    >
 
 </head>
 
@@ -93,17 +98,25 @@ if (isset($_GET['success'])) {
 
 <div class="container">
 
-    <!-- Header -->
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
 
     <div class="header">
 
         <div>
 
-            <h1>Product Manager</h1>
+            <h1>
+                Product Manager
+            </h1>
 
-            <p>Manajemen data produk</p>
+            <p>
+                Manajemen data produk
+            </p>
 
         </div>
+
 
         <a
             href="create.php"
@@ -115,25 +128,39 @@ if (isset($_GET['success'])) {
     </div>
 
 
-    <!-- Pesan sukses -->
+    <!-- =====================================================
+         PESAN SUKSES
+    ====================================================== -->
 
     <?php if ($success !== ''): ?>
 
         <div class="alert-success">
-            <?= htmlspecialchars($success) ?>
+
+            <?= htmlspecialchars(
+                $success,
+                ENT_QUOTES,
+                'UTF-8'
+            ) ?>
+
         </div>
 
     <?php endif; ?>
 
 
-    <!-- Card daftar produk -->
+    <!-- =====================================================
+         CARD DAFTAR PRODUK
+    ====================================================== -->
 
     <div class="card">
 
-        <h2>Daftar Produk</h2>
+        <h2>
+            Daftar Produk
+        </h2>
 
 
-        <!-- Search -->
+        <!-- =================================================
+             SEARCH
+        ================================================== -->
 
         <form
             method="GET"
@@ -143,9 +170,14 @@ if (isset($_GET['success'])) {
             <input
                 type="text"
                 name="search"
-                value="<?= htmlspecialchars($search) ?>"
+                value="<?= htmlspecialchars(
+                    $search,
+                    ENT_QUOTES,
+                    'UTF-8'
+                ) ?>"
                 placeholder="Cari nama atau kategori produk..."
             >
+
 
             <button
                 type="submit"
@@ -153,6 +185,7 @@ if (isset($_GET['success'])) {
             >
                 Cari
             </button>
+
 
             <a
                 href="index.php"
@@ -164,7 +197,9 @@ if (isset($_GET['success'])) {
         </form>
 
 
-        <!-- Tabel Produk -->
+        <!-- =================================================
+             TABEL PRODUK
+        ================================================== -->
 
         <div class="table-container">
 
@@ -201,7 +236,7 @@ if (isset($_GET['success'])) {
 
                             <td
                                 colspan="7"
-                                style="text-align: center; padding: 30px;"
+                                class="empty-data"
                             >
                                 Belum ada produk.
                             </td>
@@ -214,30 +249,49 @@ if (isset($_GET['success'])) {
 
                             <tr>
 
+
                                 <!-- ID -->
 
-                                <td>
-                                    <?= htmlspecialchars($product['id']) ?>
+                                <td data-label="ID">
+
+                                    <?= (int) $product['id'] ?>
+
                                 </td>
 
 
                                 <!-- Nama Produk -->
 
-                                <td>
-                                    <?= htmlspecialchars($product['name']) ?>
+                                <td
+                                    data-label="Nama Produk"
+                                    class="product-name"
+                                >
+
+                                    <?= htmlspecialchars(
+                                        $product['name'],
+                                        ENT_QUOTES,
+                                        'UTF-8'
+                                    ) ?>
+
                                 </td>
 
 
                                 <!-- Kategori -->
 
-                                <td>
-                                    <?= htmlspecialchars($product['category']) ?>
+                                <td data-label="Kategori">
+
+                                    <?= htmlspecialchars(
+                                        $product['category'],
+                                        ENT_QUOTES,
+                                        'UTF-8'
+                                    ) ?>
+
                                 </td>
 
 
                                 <!-- Harga -->
 
-                                <td>
+                                <td data-label="Harga">
+
                                     Rp
                                     <?= number_format(
                                         $product['price'],
@@ -245,29 +299,41 @@ if (isset($_GET['success'])) {
                                         ',',
                                         '.'
                                     ) ?>
+
                                 </td>
 
 
                                 <!-- Stok -->
 
-                                <td>
-                                    <?= htmlspecialchars($product['stock']) ?>
+                                <td data-label="Stok">
+
+                                    <?= (int) $product['stock'] ?>
+
                                 </td>
 
 
-                                <!-- Tanggal -->
+                                <!-- Dibuat -->
 
-                                <td>
-                                    <?= htmlspecialchars($product['created_at']) ?>
+                                <td data-label="Dibuat">
+
+                                    <?= htmlspecialchars(
+                                        $product['created_at'],
+                                        ENT_QUOTES,
+                                        'UTF-8'
+                                    ) ?>
+
                                 </td>
 
 
                                 <!-- Aksi -->
 
-                                <td>
+                                <td
+                                    data-label="Aksi"
+                                    class="action-cell"
+                                >
 
                                     <a
-                                        href="edit.php?id=<?= $product['id'] ?>"
+                                        href="edit.php?id=<?= (int) $product['id'] ?>"
                                         class="btn-edit"
                                     >
                                         Edit
@@ -277,20 +343,24 @@ if (isset($_GET['success'])) {
                                     <form
                                         method="POST"
                                         action="delete.php"
-                                        style="display: inline;"
+                                        class="delete-form"
                                         onsubmit="return confirm('Yakin ingin menghapus produk ini?');"
                                     >
 
                                         <input
                                             type="hidden"
                                             name="id"
-                                            value="<?= htmlspecialchars($product['id']) ?>"
+                                            value="<?= (int) $product['id'] ?>"
                                         >
 
                                         <input
                                             type="hidden"
                                             name="csrf_token"
-                                            value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>"
+                                            value="<?= htmlspecialchars(
+                                                $_SESSION['csrf_token'],
+                                                ENT_QUOTES,
+                                                'UTF-8'
+                                            ) ?>"
                                         >
 
                                         <button
